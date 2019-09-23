@@ -7,7 +7,7 @@ Create an invalidation of your CloudFront distribution
 Add the following snippet to the script section of your `bitbucket-pipelines.yml` file:
 
 ```yaml
-- pipe: atlassian/aws-cloudfront-invalidate:0.0.0
+- pipe: atlassian/aws-cloudfront-invalidate:0.1.0
   variables:
     AWS_ACCESS_KEY_ID: "<string>"
     AWS_SECRET_ACCESS_KEY: "<string>"
@@ -38,7 +38,7 @@ Basic example creating and invalidation:
 
 ```yaml
 script:
-  - pipe: atlassian/aws-cloudfront-invalidate:0.0.0
+  - pipe: atlassian/aws-cloudfront-invalidate:0.1.0
     variables:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
@@ -50,7 +50,7 @@ Advanced example creating an invalidation for a list of paths:
 
 ```yaml
 script:
-  - pipe: atlassian/aws-cloudfront-invalidate:0.0.0
+  - pipe: atlassian/aws-cloudfront-invalidate:0.1.0
     variables:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
