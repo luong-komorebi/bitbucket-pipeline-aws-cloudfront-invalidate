@@ -1,0 +1,45 @@
+image:
+  name: python:3.7
+
+release-dev: &release-dev
+  step:
+    name: Release development version
+    script:
+      - set -ex
+      - pip install semversioner
+      - VERSION=$(semversioner current-version)
+      - IMAGE=bitbucketpipelines/$BITBUCKET_REPO_SLUG
+      - echo ${DOCKERHUB_PASSWORD} | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+      - docker build -t ${IMAGE} .
+      - docker tag ${IMAGE} ${IMAGE}:${VERSION}.${BITBUCKET_BUILD_NUMBER}-dev
+      - docker push ${IMAGE}:${VERSION}.${BITBUCKET_BUILD_NUMBER}-dev
+    services:
+      - docker
+
+test: &test
+  step:
+    name: Test
+    script:
+    - pip install -r test/requirements.txt
+    - pytest -v test/test.py  --junitxml=test-reports/report.xml
+    - flake8 --ignore E501,E125
+    services:
+    - docker
+
+push: &push
+  step:
+    script:
+      - pipe: docker://bitbucketpipelines/meta-pipe:0.0.2
+        variables:
+          DOCKERHUB_USERNAME: $DOCKERHUB_USERNAME
+          DOCKERHUB_PASSWORD: $DOCKERHUB_PASSWORD
+          IMAGE: bitbucketpipelines/${BITBUCKET_REPO_SLUG}
+
+pipelines:
+  default:
+  - <<: *test
+  - <<: *release-dev
+  branches:
+    master:
+    - <<: *test
+    - <<: *push
