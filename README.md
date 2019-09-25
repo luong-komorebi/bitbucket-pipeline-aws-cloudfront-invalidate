@@ -2,6 +2,8 @@
 
 Create an invalidation of your CloudFront distribution
 
+One of the most common use cases is refreshing caches for your CloudFront distribution that points to your S3 bucket.git branch --set-upstream-to=origin/<branch> master
+
 ## YAML Definition
 
 Add the following snippet to the script section of your `bitbucket-pipelines.yml` file:
@@ -59,6 +61,24 @@ script:
       PATHS: '/index.html /home.html'
 ```
 
+Example using an `aws-s3-deploy` pipe to sync your files to S3 and triggering a distribution invalidation to refresh the CDN caches:
+```
+script:
+  - pipe: atlassian/aws-s3-deploy:0.3.2
+    variables:
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      AWS_DEFAULT_REGION: 'us-east-1'
+      S3_BUCKET: 'my-bucket-name'
+      LOCAL_PATH: 'build'
+
+  - pipe: atlassian/aws-cloudfront-invalidate:0.1.0
+    variables:
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+      DISTRIBUTION_ID: '123xyz'
+```
 ## Support
 If you’d like help with this pipe, or you have an issue or feature request, [let us know on Community](https://community.atlassian.com/t5/forums/postpage/choose-node/true/interaction-style/qanda?add-tags=bitbucket-pipelines,pipes).
 
