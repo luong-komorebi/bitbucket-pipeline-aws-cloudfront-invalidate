@@ -2,7 +2,8 @@
 
 Create an invalidation of your CloudFront distribution
 
-One of the most common use cases is refreshing caches for your CloudFront distribution that points to your S3 bucket.git branch --set-upstream-to=origin/<branch> master
+Remove a file(s) from CloudFront edge caches before it expires. The next time a viewer requests the file, CloudFront returns to the origin to fetch the latest version of the file. This is specially useful to refresh the content served by static websites deployed to S3 buckets. For more information about file invalidation in CloudFront, please, check the AWS official docs (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html).
+You can use Amazon CloudFront to improve the performance of your website. CloudFront makes your website’s files (such as HTML, images, and video) available from data centers around the world (called edge locations). When a visitor requests a file from your website, CloudFront automatically redirects the request to a copy of the file at the nearest edge location. This results in faster download times than if the visitor had requested the content from a data center that is located farther away.
 
 ## YAML Definition
 
@@ -33,6 +34,8 @@ _(*) = required variable._
 
 ## Prerequisites
 
+1. CloudFront distribution set up. Here are the details about how to create a CloudFront distribution, with an AWS S3 origin: https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-cloudfront-walkthrough.html
+2. CloudFront distribution id. It can obtained from the CloudFront AWS console: https://console.aws.amazon.com/cloudfront/
 
 ## Examples
 
