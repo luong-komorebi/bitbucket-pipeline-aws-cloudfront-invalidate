@@ -1,6 +1,29 @@
 image:
   name: python:3.7
 
+
+setup: &setup
+  step:
+    name: Setup testing resources
+    script:
+      - STACK_NAME="bbci-pipes-test-infrastructure-cloudfront-${BITBUCKET_BUILD_NUMBER}"
+      - S3_BUCKET="bbci-pipes-test-s3-${BITBUCKET_BUILD_NUMBER}"
+      - pipe: atlassian/aws-cloudformation-deploy:0.5.0
+        variables:
+          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+          AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+          STACK_NAME: ${STACK_NAME}
+          TEMPLATE: "./test/CloudformationStackTemplate_cloudfront_s3.yml"
+          CAPABILITIES: ['CAPABILITY_IAM']
+          WAIT: 'true'
+          STACK_PARAMETERS: >
+            [{
+              "ParameterKey": "BucketName",
+              "ParameterValue": ${S3_BUCKET}
+            }]
+
+
 release-dev: &release-dev
   step:
     name: Release development version
@@ -16,15 +39,22 @@ release-dev: &release-dev
     services:
       - docker
 
+
 test: &test
   step:
     name: Test
     script:
-    - pip install -r test/requirements.txt
-    - pytest -v test/test.py  --junitxml=test-reports/report.xml
-    - flake8 --ignore E501,E125
+      - pip install -r test/requirements.txt
+      - flake8 --ignore E501,E125
+      - pytest test/test.py --verbose --capture=no --junitxml=test-reports/report.xml
+    after-script:
+      - STACK_NAME="bbci-pipes-test-infrastructure-cloudfront-${BITBUCKET_BUILD_NUMBER}"
+      - S3_BUCKET="bbci-pipes-test-s3-${BITBUCKET_BUILD_NUMBER}"
+      - aws --region ${AWS_DEFAULT_REGION} s3 rb s3://${S3_BUCKET} --force
+      - aws --region ${AWS_DEFAULT_REGION} cloudformation delete-stack --stack-name ${STACK_NAME}
     services:
-    - docker
+      - docker
+
 
 push: &push
   step:
@@ -35,11 +65,14 @@ push: &push
           DOCKERHUB_PASSWORD: $DOCKERHUB_PASSWORD
           IMAGE: bitbucketpipelines/${BITBUCKET_REPO_SLUG}
 
+
 pipelines:
   default:
+  - <<: *setup
   - <<: *test
   - <<: *release-dev
   branches:
     master:
+    - <<: *setup
     - <<: *test
     - <<: *push

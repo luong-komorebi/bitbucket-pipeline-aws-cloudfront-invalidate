@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: "CloudFront test infrastructure"
+
+Parameters:
+  BucketName:
+    Type: String
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: PublicRead
+  testDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+        - DomainName: !GetAtt S3Bucket.DomainName
+          Id: !Ref S3Bucket
+          S3OriginConfig: {}
+        Enabled: 'true'
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          AllowedMethods:
+          - GET
+          - HEAD
+          - OPTIONS
+          TargetOriginId: !Ref S3Bucket
+          ForwardedValues:
+            QueryString: 'false'
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: allow-all
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
+    DependsOn:
+      - S3Bucket
