@@ -1,5 +1,5 @@
 name: AWS CloudFront create invalidation
-image: bitbucketpipelines/aws-cloudfront-invalidate:0.1.2
+image: bitbucketpipelines/aws-cloudfront-invalidate:0.1.3
 description: Invalidate your CloudFront distribution to refresh caches
 repository: https://bitbucket.org/atlassian/aws-cloudfront-invalidate
 maintainer: bitbucketci-team@atlassian.com
