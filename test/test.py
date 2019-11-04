@@ -5,6 +5,17 @@ import boto3
 from bitbucket_pipes_toolkit.test import PipeTestCase
 
 
+STACK_NAME = f"bbci-pipes-test-infrastructure-cloudfront-{os.getenv('BITBUCKET_BUILD_NUMBER')}"
+AWS_DEFAULT_REGION = os.getenv("AWS_DEFAULT_REGION")
+
+
+def get_distribution_id():
+    client = boto3.client('cloudformation', region_name=AWS_DEFAULT_REGION)
+    resources = client.list_stack_resources(StackName=STACK_NAME)['StackResourceSummaries']
+
+    return [res['PhysicalResourceId'] for res in resources if res['LogicalResourceId'] == 'testDistribution'][0]
+
+
 class CloudFrontTestCase(PipeTestCase):
 
     maxDiff = None
@@ -14,7 +25,7 @@ class CloudFrontTestCase(PipeTestCase):
             "AWS_ACCESS_KEY_ID": os.getenv("AWS_ACCESS_KEY_ID"),
             "AWS_SECRET_ACCESS_KEY": os.getenv("AWS_SECRET_ACCESS_KEY"),
             "AWS_DEFAULT_REGION": os.getenv("AWS_DEFAULT_REGION"),
-            "DISTRIBUTION_ID": os.getenv("DISTRIBUTION_ID"),
+            "DISTRIBUTION_ID": get_distribution_id(),
         })
 
         self.assertIn('Successfully created a cloudfront invalidation', result)
@@ -24,14 +35,14 @@ class CloudFrontTestCase(PipeTestCase):
             "AWS_ACCESS_KEY_ID": os.getenv("AWS_ACCESS_KEY_ID"),
             "AWS_SECRET_ACCESS_KEY": os.getenv("AWS_SECRET_ACCESS_KEY"),
             "AWS_DEFAULT_REGION": os.getenv("AWS_DEFAULT_REGION"),
-            "DISTRIBUTION_ID": os.getenv("DISTRIBUTION_ID"),
+            "DISTRIBUTION_ID": get_distribution_id(),
             "PATHS": "/index.html /home.html"
         })
 
         self.assertIn('Successfully created a cloudfront invalidation', result)
 
     def test_invalidation_is_created_in_aws(self):
-        distribution_id = os.getenv("DISTRIBUTION_ID")
+        distribution_id = get_distribution_id()
         result = self.run_container(environment={
             "AWS_ACCESS_KEY_ID": os.getenv("AWS_ACCESS_KEY_ID"),
             "AWS_SECRET_ACCESS_KEY": os.getenv("AWS_SECRET_ACCESS_KEY"),
