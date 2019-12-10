@@ -1,0 +1,4 @@
+{
+  "type": "patch",
+  "description": "Internal maintenance: Add hadolint linter for Dockerfile"
+}
