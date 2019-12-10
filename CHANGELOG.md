@@ -1,6 +1,10 @@
 # Changelog
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## 0.1.4
+
+- patch: Internal maintenance: Add hadolint linter for Dockerfile
+
 ## 0.1.3
 
 - patch: Internal maintenance: Add auto infrastructure for tests.
