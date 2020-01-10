@@ -16,7 +16,7 @@ variables = {
 }
 
 # initialize the Pipe object. At this stage the validation of variables takes place
-pipe = Pipe(schema=variables)
+pipe = Pipe(schema=variables, check_for_newer_version=True)
 
 region = pipe.get_variable('AWS_DEFAULT_REGION')
 distribution_id = pipe.get_variable('DISTRIBUTION_ID')
