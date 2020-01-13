@@ -1,0 +1,4 @@
+{
+  "type": "minor",
+  "description": "Display a warning message when there is a new version of the pipe."
+}
