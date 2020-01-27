@@ -1,6 +1,10 @@
 # Changelog
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## 0.3.0
+
+- minor: Add default values for AWS variables.
+
 ## 0.2.0
 
 - minor: Display a warning message when there is a new version of the pipe.

@@ -1,0 +1,6 @@
+[
+  {
+    "description": "Add default values for AWS variables.",
+    "type": "minor"
+  }
+]
