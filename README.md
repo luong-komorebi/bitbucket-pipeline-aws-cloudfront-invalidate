@@ -12,9 +12,9 @@ Add the following snippet to the script section of your `bitbucket-pipelines.yml
 ```yaml
 - pipe: atlassian/aws-cloudfront-invalidate:0.3.0
   variables:
-    AWS_ACCESS_KEY_ID: "<string>"
-    AWS_SECRET_ACCESS_KEY: "<string>"
-    AWS_DEFAULT_REGION: "<string>"
+    AWS_ACCESS_KEY_ID: '<string>' # Optional if already defined in the context.
+    AWS_SECRET_ACCESS_KEY: '<string>' # Optional if already defined in the context.
+    AWS_DEFAULT_REGION: '<string>' # Optional if already defined in the context.
     DISTRIBUTION_ID: "<string>"
     # PATHS: "<string>" # Optional
     # DEBUG: "<boolean>" # Optional
@@ -23,14 +23,16 @@ Add the following snippet to the script section of your `bitbucket-pipelines.yml
 
 | Variable              | Usage                                                       |
 | --------------------- | ----------------------------------------------------------- |
-| AWS_ACCESS_KEY_ID (*) | AWS access key id |
-| AWS_SECRET_ACCESS_KEY (*) | AWS secret key |
-| AWS_DEFAULT_REGION (*) | AWS region |
+| AWS_ACCESS_KEY_ID (**) | AWS access key id |
+| AWS_SECRET_ACCESS_KEY (**) | AWS secret key |
+| AWS_DEFAULT_REGION (**) | AWS region |
 | DISTRIBUTION_ID (*)   | The id of your CloudFront distribution. |
 | PATHS                   | List of white space separated paths to invalidate. Default: `/*`.|
 | DEBUG                 | Turn on extra debug information. Default: `false`. |
+_(*) = required variable. This variable needs to be specified always when using the pipe._
+_(**) = required variable. If this variable is configured as a repository, account or environment variable, it doesn’t need to be declared in the pipe as it will be taken from the context. It can still be overridden when using the pipe._
 
-_(*) = required variable._
+
 
 ## Prerequisites
 
@@ -39,7 +41,9 @@ _(*) = required variable._
 
 ## Examples
 
-Basic example creating and invalidation:
+### Basic example:
+
+Creating and invalidation:
 
 ```yaml
 script:
@@ -51,7 +55,18 @@ script:
       DISTRIBUTION_ID: '123xyz'
 ```
 
-Advanced example creating an invalidation for a list of paths:
+Example creating and invalidation. `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_DEFAULT_REGION` are configured as repository variables, so there is no need to declare them in the pipe.
+
+```yaml
+script:
+  - pipe: atlassian/aws-cloudfront-invalidate:0.3.0
+    variables:
+      DISTRIBUTION_ID: '123xyz'
+```
+
+### Advanced example:
+
+Creating an invalidation for a list of paths:
 
 ```yaml
 script:
@@ -82,11 +97,20 @@ script:
       AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
       DISTRIBUTION_ID: '123xyz'
 ```
+
+
 ## Support
-If you’d like help with this pipe, or you have an issue or feature request, [let us know on Community](https://community.atlassian.com/t5/forums/postpage/choose-node/true/interaction-style/qanda?add-tags=bitbucket-pipelines,pipes).
+If you’d like help with this pipe, or you have an issue or feature request, [let us know on Community][community].
 
 If you’re reporting an issue, please include:
 
 - the version of the pipe
 - relevant logs and error messages
 - steps to reproduce
+
+
+## License
+Copyright (c) 2019 Atlassian and others.
+Apache 2.0 licensed, see [LICENSE.txt](LICENSE.txt) file.
+
+[community]: https://community.atlassian.com/t5/forums/postpage/board-id/bitbucket-pipelines-questions?add-tags=pipes,aws,cloudfront
