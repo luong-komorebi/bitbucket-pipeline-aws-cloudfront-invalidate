@@ -1,6 +1,12 @@
 # Changelog
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## 0.3.1
+
+- patch: Internal maintenance: Upgrade dependency version bitbucket-pipes-toolkit.
+- patch: Update the Readme with a new Atlassian Community link.
+- patch: Update the Readme with details about default variables.
+
 ## 0.3.0
 
 - minor: Add default values for AWS variables.
