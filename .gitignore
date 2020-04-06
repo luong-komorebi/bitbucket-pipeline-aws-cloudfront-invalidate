@@ -1,0 +1,9 @@
+# Secrets
+id_rsa
+credentials
+identity
+*.pem
+.ssh/
+.aws/
+.gcp/
+.kube/
