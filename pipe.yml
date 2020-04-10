@@ -1,5 +1,5 @@
 name: AWS CloudFront create invalidation
-image: bitbucketpipelines/aws-cloudfront-invalidate:0.3.1
+image: bitbucketpipelines/aws-cloudfront-invalidate:0.3.2
 description: Invalidate your CloudFront distribution to refresh caches
 variables:
   - name: AWS_ACCESS_KEY_ID

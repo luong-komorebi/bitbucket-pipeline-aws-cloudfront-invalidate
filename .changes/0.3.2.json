@@ -1,0 +1,6 @@
+[
+  {
+    "description": "Internal maintenance: Add gitignore secrets.",
+    "type": "patch"
+  }
+]
