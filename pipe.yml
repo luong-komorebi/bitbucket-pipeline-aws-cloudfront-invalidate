@@ -1,6 +1,7 @@
 name: AWS CloudFront create invalidation
 image: bitbucketpipelines/aws-cloudfront-invalidate:0.3.2
 description: Invalidate your CloudFront distribution to refresh caches
+category: Deployment
 variables:
   - name: AWS_ACCESS_KEY_ID
     default: "$AWS_ACCESS_KEY_ID"
@@ -9,7 +10,12 @@ variables:
   - name: AWS_DEFAULT_REGION
     default: "$AWS_DEFAULT_REGION"
 repository: https://bitbucket.org/atlassian/aws-cloudfront-invalidate
-maintainer: bitbucketci-team@atlassian.com
+vendor:
+  name: Amazon
+  website: https://aws.amazon.com/
+maintainer:
+  name: Atlassian
+  website: https://www.atlassian.com/
 tags:
     - aws
     - cloudfront
