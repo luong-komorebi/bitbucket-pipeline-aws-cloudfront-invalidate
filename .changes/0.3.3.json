@@ -1,0 +1,6 @@
+[
+  {
+    "description": "Internal maintenance: change pipe metadata according to new structure",
+    "type": "patch"
+  }
+]
