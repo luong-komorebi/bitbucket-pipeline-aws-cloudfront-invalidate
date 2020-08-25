@@ -27,6 +27,7 @@ setup: &setup
 release-dev: &release-dev
   step:
     name: Release development version
+    trigger: manual
     script:
       - set -ex
       - pip install semversioner
