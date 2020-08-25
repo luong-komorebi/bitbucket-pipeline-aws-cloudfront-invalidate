@@ -10,7 +10,7 @@ You can use Amazon CloudFront to improve the performance of your website. CloudF
 Add the following snippet to the script section of your `bitbucket-pipelines.yml` file:
 
 ```yaml
-- pipe: atlassian/aws-cloudfront-invalidate:0.3.3
+- pipe: atlassian/aws-cloudfront-invalidate:0.4.0
   variables:
     AWS_ACCESS_KEY_ID: '<string>' # Optional if already defined in the context.
     AWS_SECRET_ACCESS_KEY: '<string>' # Optional if already defined in the context.
@@ -47,7 +47,7 @@ Creating and invalidation:
 
 ```yaml
 script:
-  - pipe: atlassian/aws-cloudfront-invalidate:0.3.3
+  - pipe: atlassian/aws-cloudfront-invalidate:0.4.0
     variables:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
@@ -59,7 +59,7 @@ Example creating and invalidation. `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` 
 
 ```yaml
 script:
-  - pipe: atlassian/aws-cloudfront-invalidate:0.3.3
+  - pipe: atlassian/aws-cloudfront-invalidate:0.4.0
     variables:
       DISTRIBUTION_ID: '123xyz'
 ```
@@ -70,7 +70,7 @@ Creating an invalidation for a list of paths:
 
 ```yaml
 script:
-  - pipe: atlassian/aws-cloudfront-invalidate:0.3.3
+  - pipe: atlassian/aws-cloudfront-invalidate:0.4.0
     variables:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
@@ -90,7 +90,7 @@ script:
       S3_BUCKET: 'my-bucket-name'
       LOCAL_PATH: 'build'
 
-  - pipe: atlassian/aws-cloudfront-invalidate:0.3.3
+  - pipe: atlassian/aws-cloudfront-invalidate:0.4.0
     variables:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
