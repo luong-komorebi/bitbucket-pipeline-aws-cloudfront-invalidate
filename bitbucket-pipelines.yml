@@ -29,14 +29,15 @@ release-dev: &release-dev
     name: Release development version
     trigger: manual
     script:
-      - set -ex
       - pip install semversioner
-      - VERSION=$(semversioner current-version)
-      - IMAGE=bitbucketpipelines/$BITBUCKET_REPO_SLUG
-      - echo ${DOCKERHUB_PASSWORD} | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
-      - docker build -t ${IMAGE} .
-      - docker tag ${IMAGE} ${IMAGE}:${VERSION}.${BITBUCKET_BUILD_NUMBER}-dev
-      - docker push ${IMAGE}:${VERSION}.${BITBUCKET_BUILD_NUMBER}-dev
+      - VERSION=$(semversioner current-version).${BITBUCKET_BUILD_NUMBER}-dev
+      - pipe: docker://bitbucketpipelines/bitbucket-pipe-release:3.2.2
+        variables:
+          DOCKERHUB_USERNAME: $DOCKERHUB_USERNAME
+          DOCKERHUB_PASSWORD: $DOCKERHUB_PASSWORD
+          IMAGE: bitbucketpipelines/$BITBUCKET_REPO_SLUG
+          GIT_PUSH: 'false'
+          VERSION: ${VERSION}
     services:
       - docker
 
@@ -66,11 +67,13 @@ test: &test
 push: &push
   step:
     script:
-      - pipe: docker://bitbucketpipelines/meta-pipe:0.0.2
+      - pipe: docker://bitbucketpipelines/bitbucket-pipe-release:3.2.2
         variables:
           DOCKERHUB_USERNAME: $DOCKERHUB_USERNAME
           DOCKERHUB_PASSWORD: $DOCKERHUB_PASSWORD
-          IMAGE: bitbucketpipelines/${BITBUCKET_REPO_SLUG}
+          IMAGE: bitbucketpipelines/$BITBUCKET_REPO_SLUG
+    services:
+      - docker
 
 
 pipelines:
