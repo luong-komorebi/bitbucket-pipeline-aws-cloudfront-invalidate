@@ -1,6 +1,10 @@
 # Changelog
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## 0.4.1
+
+- patch: Internal maintenance: bump bitbucket-pipe-release with ssh push back approach.
+
 ## 0.4.0
 
 - minor: Internal maintenance: bump bitbucket-pipes-toolkit version.

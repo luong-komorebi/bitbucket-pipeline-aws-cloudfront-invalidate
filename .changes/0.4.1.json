@@ -1,0 +1,6 @@
+[
+  {
+    "description": "Internal maintenance: bump bitbucket-pipe-release with ssh push back approach.",
+    "type": "patch"
+  }
+]
