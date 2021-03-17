@@ -1,6 +1,11 @@
 # Changelog
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## 0.5.0
+
+- minor: Bump boto3 version to 1.17.12.
+- minor: Support AWS OIDC authentication. Environment variables AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY are not required anymore.
+
 ## 0.4.1
 
 - patch: Internal maintenance: bump bitbucket-pipe-release with ssh push back approach.
