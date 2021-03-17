@@ -46,11 +46,13 @@ test: &test
   parallel:
     - step:
         name: Test
+        oidc: true
         script:
           - pip install -r test/requirements.txt
           - flake8 --ignore E501,E125
           - pytest test/test.py --verbose --capture=no --junitxml=test-reports/report.xml
         after-script:
+          - pip install awscli
           - STACK_NAME="bbci-pipes-test-infrastructure-cloudfront-${BITBUCKET_BUILD_NUMBER}"
           - S3_BUCKET="bbci-pipes-test-s3-${BITBUCKET_BUILD_NUMBER}"
           - aws --region ${AWS_DEFAULT_REGION} s3 rb s3://${S3_BUCKET} --force
