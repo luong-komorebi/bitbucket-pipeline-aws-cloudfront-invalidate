@@ -1,6 +1,10 @@
 # Changelog
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## 0.6.0
+
+- minor: Bump pipes-toolkit -> 2.2.0.
+
 ## 0.5.0
 
 - minor: Bump boto3 version to 1.17.12.

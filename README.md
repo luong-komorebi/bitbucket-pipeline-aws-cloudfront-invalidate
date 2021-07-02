@@ -10,7 +10,7 @@ You can use Amazon CloudFront to improve the performance of your website. CloudF
 Add the following snippet to the script section of your `bitbucket-pipelines.yml` file:
 
 ```yaml
-- pipe: atlassian/aws-cloudfront-invalidate:0.5.0
+- pipe: atlassian/aws-cloudfront-invalidate:0.6.0
   variables:
     AWS_ACCESS_KEY_ID: '<string>' # Optional if already defined in the context or OIDC used.
     AWS_SECRET_ACCESS_KEY: '<string>' # Optional if already defined in the context or OIDC used.
@@ -65,7 +65,7 @@ Creating and invalidation:
 
 ```yaml
 script:
-  - pipe: atlassian/aws-cloudfront-invalidate:0.5.0
+  - pipe: atlassian/aws-cloudfront-invalidate:0.6.0
     variables:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
@@ -77,7 +77,7 @@ Example creating and invalidation. `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` 
 
 ```yaml
 script:
-  - pipe: atlassian/aws-cloudfront-invalidate:0.5.0
+  - pipe: atlassian/aws-cloudfront-invalidate:0.6.0
     variables:
       DISTRIBUTION_ID: '123xyz'
 ```
@@ -91,7 +91,7 @@ Parameter `oidc: true` in the step configuration and variable `AWS_OIDC_ROLE_ARN
 - step:
     oidc: true
     script:
-      - pipe: atlassian/aws-cloudfront-invalidate:0.5.0
+      - pipe: atlassian/aws-cloudfront-invalidate:0.6.0
         variables:
           AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
           AWS_OIDC_ROLE_ARN: 'arn:aws:iam::123456789012:role/role_name'
@@ -102,7 +102,7 @@ Creating an invalidation for a list of paths:
 
 ```yaml
 script:
-  - pipe: atlassian/aws-cloudfront-invalidate:0.5.0
+  - pipe: atlassian/aws-cloudfront-invalidate:0.6.0
     variables:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
@@ -122,7 +122,7 @@ script:
       S3_BUCKET: 'my-bucket-name'
       LOCAL_PATH: 'build'
 
-  - pipe: atlassian/aws-cloudfront-invalidate:0.5.0
+  - pipe: atlassian/aws-cloudfront-invalidate:0.6.0
     variables:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
