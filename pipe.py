@@ -30,7 +30,7 @@ def setup_oidc_aws_credentials(role_arn, web_identity_token_path, aws_configfile
 
 
 @retry(wait_random_min=1000, wait_random_max=2000, stop_max_attempt_number=3)
-def create_invalidation_request(caller, pipe, distribution_id, paths):
+def create_invalidation_request(pipe, distribution_id, paths):
     caller = datetime.datetime.utcnow().isoformat()
     pipe.log_info(
         f"Sending an invalidation request for the distribution id: {distribution_id}"
@@ -137,4 +137,4 @@ pipe.log_info("Sending a cloudfront invalidation request")
 # create a unique caller id from BITBUCKET_REPO_FULL_NAME and BITBUCKET_BUILD_NUMBER
 # see https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html
 # to get the list of all available environment variables in pipelines
-create_invalidation_request(caller, pipe, distribution_id, paths)
+create_invalidation_request(pipe, distribution_id, paths)
