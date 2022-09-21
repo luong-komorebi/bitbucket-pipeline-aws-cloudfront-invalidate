@@ -1,12 +1,11 @@
+import configparser
+import datetime
 import os
 import time
-import datetime
 
 import boto3
-import configparser
-
-from bitbucket_pipes_toolkit import Pipe, get_logger, enable_debug
-
+from bitbucket_pipes_toolkit import Pipe, enable_debug, get_logger
+from retrying import retry
 
 bitbucket_step_oidc_token = os.getenv('BITBUCKET_STEP_OIDC_TOKEN')
 aws_oidc_role_arn = os.getenv('AWS_OIDC_ROLE_ARN')
@@ -30,6 +29,36 @@ def setup_oidc_aws_credentials(role_arn, web_identity_token_path, aws_configfile
         config.write(configfile)
 
 
+@retry(wait_random_min=1000, wait_random_max=2000, stop_max_attempt_number=3)
+def create_invalidation_request(caller, pipe, distribution_id, paths):
+    caller = datetime.datetime.utcnow().isoformat()
+    pipe.log_info(
+        f"Sending an invalidation request for the distribution id: {distribution_id}")
+    pipe.log_info(
+        f"Distibution URL: https://console.aws.amazon.com/cloudfront/home?region={region}#distribution-settings:{distribution_id}")
+
+    try:
+        invalidation = client.create_invalidation(DistributionId=distribution_id,
+                                                  InvalidationBatch={
+                                                      'Paths': {
+                                                          'Quantity': len(paths),
+                                                          'Items': paths
+                                                      },
+                                                      'CallerReference': caller})
+
+        # print a colorized success message (in green)
+        invalidation_id = invalidation['Invalidation']['Id']
+        pipe.success(
+            f'Successfully created a cloudfront invalidation: {invalidation_id}')
+
+    except Exception as error:
+        # log the ERROR message (in red)
+        pipe.log_error('Error creating a cloudfront invalidation')
+
+        # print a colorized error message and call system exit
+        pipe.fail(f"Failed to create a cloudfront invalidation: {error}")
+
+
 # defines the schema for pipe variables
 variables = {
     'AWS_ACCESS_KEY_ID': {'type': 'string', 'required': True},
@@ -43,10 +72,13 @@ variables = {
 
 if aws_oidc_role_arn is not None:
     if bitbucket_step_oidc_token is None:
-        logger.warning('Parameter "oidc: true" in the step configuration is required for OIDC authentication')
-        logger.info('Using default authentication with AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY.')
+        logger.warning(
+            'Parameter "oidc: true" in the step configuration is required for OIDC authentication')
+        logger.info(
+            'Using default authentication with AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY.')
     else:
-        logger.info('Authenticating with a OpenID Connect (OIDC) Web Identity Provider')
+        logger.info(
+            'Authenticating with a OpenID Connect (OIDC) Web Identity Provider')
 
         # default config directory ~/.aws/config
         aws_config_directory = os.path.join(home_path, '.aws')
@@ -56,16 +88,19 @@ if aws_oidc_role_arn is not None:
 
         # store token to the file
         random_number = str(time.time_ns())
-        oidc_token_path = os.path.join(oidc_token_directory, f"oidc_token_{random_number}")
+        oidc_token_path = os.path.join(
+            oidc_token_directory, f"oidc_token_{random_number}")
         with open(oidc_token_path, 'w') as f:
             f.write(bitbucket_step_oidc_token)
         os.chmod(oidc_token_path, 0o600)
 
         # create or update config
         aws_configfile_path = os.path.join(aws_config_directory, 'config')
-        setup_oidc_aws_credentials(aws_oidc_role_arn, oidc_token_path, aws_configfile_path)
+        setup_oidc_aws_credentials(
+            aws_oidc_role_arn, oidc_token_path, aws_configfile_path)
 
-        logger.debug('Configured settings for authentication with assume web identity role')
+        logger.debug(
+            'Configured settings for authentication with assume web identity role')
 
         # update the schema for pipe variables
         variables['AWS_ACCESS_KEY_ID']['required'] = False
@@ -95,28 +130,4 @@ pipe.log_info('Sending a cloudfront invalidation request')
 # create a unique caller id from BITBUCKET_REPO_FULL_NAME and BITBUCKET_BUILD_NUMBER
 # see https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html
 # to get the list of all available environment variables in pipelines
-
-caller = datetime.datetime.utcnow().isoformat()
-
-pipe.log_info(f"Sending an invalidation request for the distribution id: {distribution_id}")
-pipe.log_info(f"Distibution URL: https://console.aws.amazon.com/cloudfront/home?region={region}#distribution-settings:{distribution_id}")
-
-try:
-    invalidation = client.create_invalidation(DistributionId=distribution_id,
-                                              InvalidationBatch={
-                                                  'Paths': {
-                                                      'Quantity': len(paths),
-                                                      'Items': paths
-                                                  },
-                                                  'CallerReference': caller})
-
-    # print a colorized success message (in green)
-    invalidation_id = invalidation['Invalidation']['Id']
-    pipe.success(f'Successfully created a cloudfront invalidation: {invalidation_id}')
-
-except Exception as error:
-    # log the ERROR message (in red)
-    pipe.log_error('Error creating a cloudfront invalidation')
-
-    # print a colorized error message and call system exit
-    pipe.fail(f"Failed to create a cloudfront invalidation: {error}")
+create_invalidation_request(caller, pipe, distribution_id, paths)
