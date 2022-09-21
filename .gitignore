@@ -25,3 +25,5 @@ identity
 .aws/
 .gcp/
 .kube/
+
+venv/
