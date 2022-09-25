@@ -1,14 +1,14 @@
-Contributing to Bitbucket Pipes
-===============================
+# Contributing to Bitbucket Pipes
 
 ### General
+
 Pull requests, issues and comments welcome. For pull requests:
 
-* Add tests for new features and bug fixes
+- Add tests for new features and bug fixes
 
-* Follow the existing style
+- Follow the existing style
 
-* Separate unrelated changes into multiple pull requests
+- Separate unrelated changes into multiple pull requests
 
 See the existing issues for things to start contributing.
 
@@ -21,8 +21,8 @@ link below to digitally sign the CLA. The Corporate CLA is for those who are
 contributing as a member of an organization and the individual CLA is for
 those contributing as an individual.
 
-* [CLA for corporate contributors](https://na2.docusign.net/Member/PowerFormSigning.aspx?PowerFormId=e1c17c66-ca4d-4aab-a953-2c231af4a20b)
-* [CLA for individuals](https://na2.docusign.net/Member/PowerFormSigning.aspx?PowerFormId=3f94fbdc-2fbe-46ac-b14c-5d152700ae5d)
+- [CLA for corporate contributors](https://na2.docusign.net/Member/PowerFormSigning.aspx?PowerFormId=e1c17c66-ca4d-4aab-a953-2c231af4a20b)
+- [CLA for individuals](https://na2.docusign.net/Member/PowerFormSigning.aspx?PowerFormId=3f94fbdc-2fbe-46ac-b14c-5d152700ae5d)
 
 ### Getting started
 
@@ -31,34 +31,32 @@ The basic workflow for working with pipes code is as follows:
 1. Create a fork on Bitbucket. Here is a detailed insctruction how to do it: [Forking a Repository](https://confluence.atlassian.com/bitbucket/forking-a-repository-221449527.html)
 2. Clone the forked repository to your local system
 
-    ```
-    git clone git@bitbucket.org:<your-account-name>/<repo-name>.git
-    ```
- 
+   ```
+   git clone git@bitbucket.org:<your-account-name>/<repo-name>.git
+   ```
+
 3. Create a new branch
 
-    ```
-    git checkout -b feature/<new-feature>
-    ```
+   ```
+   git checkout -b feature/<new-feature>
+   ```
 
 
     We encourage everyone to follow the feature branching model. See [Git Feature Branch Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) for more details and best practices.
 
 4. Modify the local repository
 
-5. Commit your changes 
+5. Commit your changes
 
-    ```
-    git commit -am "Add new feature"
-    ```
+   ```
+   git commit -am "Add new feature"
+   ```
 
+6) Push changes back to the remote fork on Bitbucket
 
-6. Push changes back to the remote fork on Bitbucket
-
-    ```
-    git push origin feature/<new-feature>
-    ```
-
+   ```
+   git push origin feature/<new-feature>
+   ```
 
 7. Create a pull request from the forked repository (source) back to the original (destination)
 
@@ -74,26 +72,27 @@ To run tests locally you need to:
 
 1. Install pytest
 
-    ```
-    pip install pytest
-    ```
+   ```
+   pip install pytest
+   ```
 
 2. Install required deps, including `docker-py` and `bitbucket_pipes_toolkit`
 
-    ```
-    pip install docker[tls] bitbucket_pipes_toolkit
-    ```
+   ```
+   pip install docker[tls] bitbucket_pipes_toolkit
+   ```
 
 3. Make sure you've set up all required environment variables required for testing. Usually, these are the same variables that are required for a pipe to run.
 
 4. Run pytest
-    ```
-    pytest test/test.py -v
-    ```
+   ```
+   pytest test/test.py -v
+   ```
 
 In addition to that, you can manually build and run a docker container to test your changes:
 
 Build the image:
+
 ```
 docker build -t my-test-image .
 ```
@@ -116,35 +115,35 @@ This pipe uses an automated release process to bump versions using semantic vers
 
 1. Install semversioner
 
-    ```
-    pip install semversioner
-    ```
+   ```
+   pip install semversioner
+   ```
 
 2. During development phase, every change that needs to be integrated to master will need one or more changeset files. You can use semversioner to generate changeset
 
-    ```
-    semversioner add-change --type patch --description "Fix security vulnerability with authentication."
-    ```
+   ```
+   semversioner add-change --type patch --description "Fix security vulnerability with authentication."
+   ```
 
 3. Make sure you commit the changeset files generated in the `.change/next-release/` folder with your code. For example:
 
-    `git add .`
-    
-    `git commit -m "BP-234 FIX security issue with authentication"`
-    
-    `git push origin` 
+   `git add .`
+
+   `git commit -m "BP-234 FIX security issue with authentication"`
+
+   `git push origin`
 
 4. That's it! Merge to `master` and Bitbucket Pipelines will do the rest:
 
-    - Generate new version number based on the changeset types major, minor, patch.
-    - Generate a new file in .changes directory with all the changes for this specific version.
+   - Generate new version number based on the changeset types major, minor, patch.
+   - Generate a new file in .changes directory with all the changes for this specific version.
 
-    - (Re)generate the CHANGELOG.md file.
+   - (Re)generate the CHANGELOG.md file.
 
-    - Bump the version number in README.md example and pipe.yml metadata.
+   - Bump the version number in README.md example and pipe.yml metadata.
 
-    - Commit and push back to the repository.
+   - Commit and push back to the repository.
 
-    - Tag your commit with the new version number.
+   - Tag your commit with the new version number.
 
 Now you're ready to start contributing to Bitbucket Pipes. Enjoy :stuck_out_tongue_winking_eye:

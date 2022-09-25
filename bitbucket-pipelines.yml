@@ -1,29 +1,6 @@
 image:
   name: python:3.7
 
-
-setup: &setup
-  step:
-    name: Setup testing resources
-    script:
-      - STACK_NAME="bbci-pipes-test-infrastructure-cloudfront-${BITBUCKET_BUILD_NUMBER}"
-      - S3_BUCKET="bbci-pipes-test-s3-${BITBUCKET_BUILD_NUMBER}"
-      - pipe: atlassian/aws-cloudformation-deploy:0.5.0
-        variables:
-          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-          AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-          STACK_NAME: ${STACK_NAME}
-          TEMPLATE: "./test/CloudformationStackTemplate_cloudfront_s3.yml"
-          CAPABILITIES: ['CAPABILITY_IAM']
-          WAIT: 'true'
-          STACK_PARAMETERS: >
-            [{
-              "ParameterKey": "BucketName",
-              "ParameterValue": ${S3_BUCKET}
-            }]
-
-
 release-dev: &release-dev
   step:
     name: Release development version
@@ -35,36 +12,19 @@ release-dev: &release-dev
         variables:
           DOCKERHUB_USERNAME: $DOCKERHUB_USERNAME
           DOCKERHUB_PASSWORD: $DOCKERHUB_PASSWORD
-          IMAGE: bitbucketpipelines/$BITBUCKET_REPO_SLUG
+          IMAGE: luongvo/$BITBUCKET_REPO_SLUG
           GIT_PUSH: 'false'
           VERSION: ${VERSION}
     services:
       - docker
 
 
-test: &test
-  parallel:
-    - step:
-        name: Test
-        oidc: true
-        script:
-          - pip install -r test/requirements.txt
-          - flake8 --ignore E501,E125
-          - pytest test/test.py --verbose --capture=no --junitxml=test-reports/report.xml
-        after-script:
-          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.2.9.zip" -o "awscliv2.zip" && unzip awscliv2.zip
-          - echo 'c778f4cc55877833679fdd4ae9c94c07d0ac3794d0193da3f18cb14713af615f awscliv2.zip' | sha256sum -c - && ./aws/install
-          - STACK_NAME="bbci-pipes-test-infrastructure-cloudfront-${BITBUCKET_BUILD_NUMBER}"
-          - S3_BUCKET="bbci-pipes-test-s3-${BITBUCKET_BUILD_NUMBER}"
-          - aws --region ${AWS_DEFAULT_REGION} s3 rb s3://${S3_BUCKET} --force
-          - aws --region ${AWS_DEFAULT_REGION} cloudformation delete-stack --stack-name ${STACK_NAME}
-        services:
-          - docker
-    - step:
-        name: Lint the Dockerfile
-        image: hadolint/hadolint:latest-debian
-        script:
-          - hadolint Dockerfile
+lint: &lint
+  step:
+      name: Lint the Dockerfile
+      image: hadolint/hadolint:latest-debian
+      script:
+        - hadolint Dockerfile
 
 
 push: &push
@@ -74,18 +34,16 @@ push: &push
         variables:
           DOCKERHUB_USERNAME: $DOCKERHUB_USERNAME
           DOCKERHUB_PASSWORD: $DOCKERHUB_PASSWORD
-          IMAGE: bitbucketpipelines/$BITBUCKET_REPO_SLUG
+          IMAGE: luongvo/$BITBUCKET_REPO_SLUG
     services:
       - docker
 
 
 pipelines:
   default:
-  - <<: *setup
-  - <<: *test
+  - <<: *lint
   - <<: *release-dev
   branches:
     master:
-    - <<: *setup
-    - <<: *test
+    - <<: *lint
     - <<: *push
