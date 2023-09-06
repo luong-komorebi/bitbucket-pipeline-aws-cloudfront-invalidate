@@ -73,7 +73,7 @@ class CloudFrontTestCase(PipeTestCase):
             "DISTRIBUTION_ID": get_distribution_id(),
         })
 
-        self.assertRegex(result, rf'✖ Validation errors')
+        self.assertRegex(result, '✖ Validation errors')
 
 
 class CloudFrontOIDCTestCase(PipeTestCase):
